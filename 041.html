@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宇宙災變：五星多軌跡演化與多態互動相簿系統</title>
+    <style>
+        /* -------------------------------------------------------
+           1. 全網頁大背景：星海無限流動特效
+           ------------------------------------------------------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #020308;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+                radial-gradient(circle at center, #0b1126 0%, #020308 80%);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 100% 100%;
+            background-attachment: fixed;
+            
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            padding: 40px 20px;
+
+            animation: starStream 60s infinite linear;
+        }
+
+        @keyframes starStream {
+            0% { background-position: 0 0, 0 0, 0 0, center; }
+            100% { background-position: 550px 1100px, -350px 700px, 500px -500px, center; }
+        }
+
+        /* -------------------------------------------------------
+           2. 網頁版面主畫布（太空艙外框）
+           ------------------------------------------------------- */
+        .stage {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            min-height: 900px;
+            background: rgba(8, 12, 24, 0.4); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; 
+            gap: 25px;
+        }
+
+        /* 星系大群組（背景層 z-index: 1） */
+        .galaxy-group {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            animation: groupSuperFloat 25s infinite ease-in-out;
+            transform-origin: center center;
+            pointer-events: none; 
+        }
+
+        @keyframes groupSuperFloat {
+            0% { transform: translate(0px, 0px) scale(1); }
+            25% { transform: translate(25px, -20px) scale(0.98); }
+            50% { transform: translate(0px, -35px) scale(0.95); }
+            75% { transform: translate(-25px, -20px) scale(0.98); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        /* 背景幾何軌跡線 */
+        .track-bg {
+            position: absolute;
+            top: 38%; 
+            left: 50%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .track-circle { width: 440px; height: 440px; border: 1px dashed rgba(255, 255, 255, 0.05); }
+        .track-ellipse-horizontal { width: 700px; height: 300px; border: 1px dotted rgba(255, 215, 0, 0.05); }
+        .track-ellipse-vertical { width: 320px; height: 620px; border: 1px dashed rgba(255, 0, 85, 0.04); }
+
+        /* -------------------------------------------------------
+           3. 載體與公轉控制
+           ------------------------------------------------------- */
+        .cosmic-carrier {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: -50px; 
+            left: -50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes moveOrbit {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
+        }
+
+        /* -------------------------------------------------------
+           4. 全新進化：隨機災變與重生星球特效
+           ------------------------------------------------------- */
+        .morph-core {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 900;
+            text-shadow: 0 2px 5px rgba(0,0,0,1);
+            color: #ffffff;
+            border-radius: 50%; /* 基礎外觀均趨向星球球體 */
+            transition: all 0.3s ease;
+        }
+
+        /* 🪐【星球 A：金芒脈衝星】(原Square軌跡) 
+           特性：金黃色爆裂強光、從小放大、冰裂、消失重組 */
+        .obj-square {
+            offset-path: path('M 550,175 A 220,220 0 1,1 549.9,175 Z');
+            animation: moveOrbit 14s infinite linear;
+        }
+        .obj-square .morph-core {
+            background: radial-gradient(circle at 30% 30%, #fff7c2, #ffb700 40%, #593e00);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.8);
+            animation: planetGoldLife 7s infinite linear;
+        }
+        @keyframes planetGoldLife {
+            0% { transform: scale(0.2) rotate(0deg); opacity: 0; filter: drop-shadow(0 0 5px #ffd700); }
+            15% { opacity: 1; transform: scale(0.6) rotate(60deg); }
+            40% { transform: scale(1.1) rotate(160deg); filter: drop-shadow(0 0 30px #ffd700); }
+            /* 50%-70% 遭遇結構冰裂/崩裂 */
+            55% { transform: scale(1.2) rotate(200deg); clip-path: polygon(0 0, 45% 10%, 43% 45%, 10% 40%, 0 100%, 100% 100%, 100% 0); filter: drop-shadow(0 0 40px #ffea00); }
+            70% { transform: scale(1.25) rotate(250deg); clip-path: polygon(0 0, 55% 5%, 48% 55%, 20% 50%, 0 100%, 85% 95%, 100% 40%, 95% 0); opacity: 0.8; }
+            /* 終期塌縮消失 */
+            90% { transform: scale(0.4) rotate(320deg); opacity: 0; filter: brightness(3); }
+            100% { transform: scale(0.2) rotate(360deg); opacity: 0; }
+        }
+
+        /* ☄️【星球 B：噴射烈焰核星】(原Triangle軌跡) 
+           特性：尾部噴射式離子火流、劇烈自轉與崩裂重生 */
+        .obj-triangle {
+            offset-path: path('M 550,175 A 220,220 0 1,1 549.9,175 Z');
+            animation: moveOrbit 10s infinite linear;
+        }
+        /* 利用 ::after 製作噴射式的尾火 */
+        .obj-triangle::after {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 40px;
+            background: linear-gradient(90deg, #ff4500, transparent);
+            left: -110px;
+            top: 30px;
+            transform-origin: right center;
+            animation: jetFire 0.15s infinite ease-in-out;
+            opacity: 0.7;
+            filter: blur(4px);
+            pointer-events: none;
+        }
+        @keyframes jetFire {
+            0%, 100% { transform: scaleY(0.8) scaleX(0.9); opacity: 0.5; }
+            50% { transform: scaleY(1.3) scaleX(1.2); opacity: 0.9; }
+        }
+        .obj-triangle .morph-core {
+            background: radial-gradient(circle at 30% 30%, #ffaa66, #ff2200 50%, #4a0000);
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.9);
+            animation: planetFireLife 5s infinite ease-in-out;
+        }
+        @keyframes planetFireLife {
+            0% { transform: scale(0.3) rotate(0deg); opacity: 0; filter: drop-shadow(0 0 10px #ff4500); }
+            20% { opacity: 1; transform: scale(0.8) rotate(90deg); }
+            50% { transform: scale(1.1) rotate(220deg); filter: drop-shadow(0 0 35px #ff0000); }
+            75% { transform: scale(1.3) rotate(300deg); opacity: 0.9; clip-path: polygon(0% 15%, 30% 20%, 25% 60%, 0% 85%, 85% 100%, 100% 50%, 80% 0%); }
+            92% { transform: scale(0.1) rotate(350deg); opacity: 0; filter: saturate(3) brightness(5); }
+            100% { transform: scale(0.3) rotate(360deg); opacity: 0; }
+        }
+
+        /* ❄️【星球 C：幽冥冰裂星】(原Sphere軌跡)
+           特性：極速公轉、幽藍冰層色澤、急劇膨脹後產生冰裂紋碎散 */
+        .obj-sphere {
+            offset-path: path('M 550,175 A 220,220 0 1,1 549.9,175 Z');
+            animation: moveOrbit 7s infinite linear;
+        }
+        .obj-sphere .morph-core {
+            background: radial-gradient(circle at 30% 30%, #e0ffff, #00bfff 45%, #002244);
+            border: 1px solid rgba(255,255,255,0.4);
+            animation: planetIceLife 6s infinite linear;
+        }
+        @keyframes planetIceLife {
+            0% { transform: scale(0.2); opacity: 0; filter: drop-shadow(0 0 5px #00ffff); }
+            15% { opacity: 1; transform: scale(0.7); }
+            60% { transform: scale(1.15); filter: drop-shadow(0 0 25px #00bfff); opacity: 1; clip-path: none; }
+            /* 冰裂脆斷化 */
+            75% { transform: scale(1.25); filter: drop-shadow(0 0 40px #fff); clip-path: polygon(0 10%, 40% 0, 45% 40%, 15% 45%, 0 85%, 70% 100%, 65% 55%, 100% 40%, 90% 0); opacity: 0.7; }
+            90% { transform: scale(1.4); opacity: 0; filter: blur(5px); }
+            100% { transform: scale(0.2); opacity: 0; }
+        }
+
+        /* 🟢【星球 D：翡翠晶岩星】(原Rhombus軌跡)
+           特性：橫向大軌道、晶體綠光、岩層深部崩裂露光 */
+        .obj-rhombus {
+            offset-path: path('M 550,245 A 350,150 0 1,1 549.9,245 Z');
+            animation: moveOrbit 16s infinite linear;
+        }
+        .obj-rhombus .morph-core {
+            background: radial-gradient(circle at 30% 30%, #a3ffb4, #00aa44 50%, #001a05);
+            animation: planetRockLife 9s infinite ease-in-out;
+        }
+        @keyframes planetRockLife {
+            0% { transform: scale(0.4) rotate(0deg); opacity: 0; filter: drop-shadow(0 0 5px #00ff66); }
+            25% { opacity: 1; transform: scale(0.8) rotate(90deg); }
+            55% { transform: scale(1.2) rotate(180deg); filter: drop-shadow(0 0 30px #00ff44); }
+            75% { transform: scale(1.3) rotate(270deg); clip-path: polygon(10% 10%, 90% 0%, 100% 90%, 50% 70%, 0% 100%); }
+            95% { transform: scale(0.2) rotate(340deg); opacity: 0; }
+            100% { transform: scale(0.4) rotate(360deg); opacity: 0; }
+        }
+
+        /* 🟣【星球 E：暗物質超新星】(原Octagon軌跡)
+           特性：縱向大軌道、魅惑紫光與色相扭曲、擴散崩裂大重組 */
+        .obj-octagon {
+            offset-path: path('M 550,85 A 160,310 0 1,1 549.9,85 Z');
+            animation: moveOrbit 12s infinite linear;
+        }
+        .obj-octagon .morph-core {
+            background: radial-gradient(circle at 30% 30%, #fcd7ff, #9400d3 40%, #1a0033);
+            animation: planetNovaLife 8s infinite linear;
+        }
+        @keyframes planetNovaLife {
+            0% { transform: scale(0.3); opacity: 0; filter: drop-shadow(0 0 10px #da70d6) hue-rotate(0deg); }
+            20% { opacity: 1; transform: scale(0.7); }
+            50% { transform: scale(1.2); filter: drop-shadow(0 0 40px #9400d3) hue-rotate(180deg); }
+            70% { transform: scale(1.35); clip-path: polygon(15% 0, 85% 15%, 100% 45%, 75% 85%, 20% 100%, 0 60%); filter: hue-rotate(270deg); opacity: 0.8; }
+            90% { transform: scale(0.5); opacity: 0; filter: brightness(4); }
+            100% { transform: scale(0.3); opacity: 0; }
+        }
+
+
+        /* -------------------------------------------------------
+           5. 前景相簿互動網格系統
+           ------------------------------------------------------- */
+        .container {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .item {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s ease, opacity 0.4s ease;
+        }
+
+        .item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 183, 255, 0.25);
+            opacity: 1 !important; /* 滑鼠移入時不管哪一排都恢復完全不透明，方便觀看 */
+        }
+
+        .item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Hover 圖片切換 */
+        .item .img-hover { display: none; }
+        .item:hover .img-default { display: none; }
+        .item:hover .img-hover { display: block; }
+
+        /* 【核心要求】第一排最大透明度（設為超高透明 0.08，後方星球特效將清晰可見） */
+        .container-1 .item {
+            opacity: 0.08; 
+        }
+
+        /* -------------------------------------------------------
+           6. UI 標題資訊、響應式斷點（RWD）
+           ------------------------------------------------------- */
+        .interface-label {
+            position: relative;
+            z-index: 10;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .interface-label h1 { 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            color: #fff;
+            letter-spacing: 1px;
+            text-shadow: 0 0 12px rgba(234, 0, 255, 0.4);
+        }
+        .interface-label p { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+        @media screen and (min-width: 1024px) {
+            .container {
+                flex-direction: row;
+                justify-content: space-between;
+                gap: 20px;
+            }
+            .item {
+                width: 31%; 
+                height: 260px; 
+            }
+            .item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; 
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="stage">
+        
+        <div class="interface-label">
+            <h1>宇宙演化：星體災變重組與多態相簿系統</h1>
+            <p>
+                • 背景星體：幾何圖形全面「星球化」。具備金黃脈衝、離子噴射尾火、破碎冰裂與不規則崩裂等全動態特效。<br>
+                • 生命週期：5 顆星球依獨自週期執行 [新生 ➔ 放大膨脹 ➔ 裂變突變 ➔ 塌縮消失 ➔ 輪迴重生] 的隨機動態。<br>
+                • 互動設計：**第一排相簿卡片已調至最高透明度**，方便您直接穿透視線，觀測背景星體劇烈的熱核演化。
+            </p>
+        </div>
+
+        <div class="track-bg track-circle"></div>
+        <div class="track-bg track-ellipse-horizontal"></div>
+        <div class="track-bg track-ellipse-vertical"></div>
+
+        <div class="galaxy-group">
+            <div class="cosmic-carrier obj-square"><div class="morph-core">金芒星</div></div>
+            <div class="cosmic-carrier obj-triangle"><div class="morph-core">噴流核</div></div>
+            <div class="cosmic-carrier obj-sphere"><div class="morph-core">幽冥冰</div></div>
+            <div class="cosmic-carrier obj-rhombus"><div class="morph-core">翡翠晶</div></div>
+            <div class="cosmic-carrier obj-octagon"><div class="morph-core">暗物質</div></div>
+        </div>
+
+        <div class="container container-1">
+            <div class="item">
+                <img class="img-default" src="https://picsum.photos/400/400?random=4" alt="Image 4">
+                <img class="img-hover" src="https://picsum.photos/400/400?random=40" alt="Image 4 Hover">
+            </div>
+            <div class="item">
+                <img class="img-default" src="https://picsum.photos/400/400?random=5" alt="Image 5">
+                <img class="img-hover" src="https://picsum.photos/400/400?random=50" alt="Image 5 Hover">
+            </div>
+            <div class="item">
+                <img class="img-default" src="https://picsum.photos/400/400?random=6" alt="Image 6">
+                <img class="img-hover" src="https://picsum.photos/400/400?random=60" alt="Image 6 Hover">
+            </div>
+        </div>
+
+        <div class="container container-2">
+            <div class="item">
+                <img class="img-default" src="https://picsum.photos/400/400?random=7" alt="Image 7">
+                <img class="img-hover" src="https://picsum.photos/400/400?random=70" alt="Image 7 Hover">
+            </div>
+            <div class="item">
+                <img class="img-default" src="https://picsum.photos/400/400?random=8" alt="Image 8">
+                <img class="img-hover" src="https://picsum.photos/400/400?random=80" alt="Image 8 Hover">
+            </div>
+            <div class="item">
+                <img class="img-default" src="https://picsum.photos/400/400?random=9" alt="Image 9">
+                <img class="img-hover" src="https://picsum.photos/400/400?random=90" alt="Image 9 Hover">
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

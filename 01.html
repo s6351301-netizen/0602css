@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>純 CSS 小草孵化與長大特效</title>
+    <style>
+        /* 全域初始化：打造一個溫暖的溫室背景 */
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(to bottom, #e0f2fe, #bae6fd);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 泥土與環境容器 */
+        .environment {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* 盆栽泥土表面 */
+        .environment::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 200px;
+            height: 20px;
+            background: #78350f; /* 深褐色泥土 */
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        /* -------------------------------------------------------
+           小草核心本體與長大動畫
+           ------------------------------------------------------- */
+        .grass {
+            position: relative;
+            width: 40px;
+            height: 180px;
+            bottom: 10px; /* 錯開泥土線 */
+            z-index: 5;
+            
+            /* 設定動畫變形的原點在最底部中央，這樣長大時才會「由下往上」伸展 */
+            transform-origin: center bottom;
+            
+            /* 載入長大與搖曳的複合動畫 */
+            animation: 
+                grassGrow 6s infinite ease-in-out,
+                grassSway 4s infinite ease-in-out 3s; /* 延遲 3 秒等長大後再開始搖曳 */
+        }
+
+        /* 小草葉片外觀：利用 CSS 漸層與 clip-path 裁切出流線型葉子 */
+        .grass::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, #15803d, #4ade80); /* 底部深綠，頂部嫩綠 */
+            
+            /* 使用 clip-path 畫出尖尖的兩片小草葉子 */
+            clip-path: polygon(50% 0%, 40% 30%, 20% 60%, 10% 100%, 90% 100%, 80% 60%, 60% 30%);
+        }
+
+        /* -------------------------------------------------------
+           動畫排程（Keyframes）
+           ------------------------------------------------------- */
+        
+        /* 1. 長大與形變動畫：模擬從種子破土到成熟 */
+        @keyframes grassGrow {
+            0% {
+                /* 初始狀態：埋在土裡，縮小到幾乎看不見，且沒有葉子形狀 */
+                transform: scale(0);
+                opacity: 0;
+                filter: brightness(0.6); /* 剛出土時顏色較暗 */
+            }
+            10% {
+                /* 破土而出：稍微探頭 */
+                transform: scale(0.15);
+                opacity: 1;
+            }
+            30% {
+                /* 快速抽高，但寬度還很窄 */
+                transform: scaleX(0.4) scaleY(0.7);
+                filter: brightness(0.9);
+            }
+            60%, 100% {
+                /* 完全長大：恢復正常的 1:1 比例與翠綠光澤 */
+                transform: scale(1);
+                opacity: 1;
+                filter: brightness(1);
+            }
+        }
+
+        /* 2. 微風搖曳動畫：長大後隨風輕輕擺動 */
+        @keyframes grassSway {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+            }
+            30% {
+                /* 往右微風吹拂，帶有一點點被壓低的縮放 */
+                transform: scale(1) rotate(6deg) scaleY(0.98);
+            }
+            70% {
+                /* 往左回彈 */
+                transform: scale(1) rotate(-4deg);
+            }
+        }
+
+        /* 裝飾：陽光光暈效果 */
+        .sunlight {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #fef08a;
+            border-radius: 50%;
+            filter: blur(10px);
+            box-shadow: 0 0 40px #fde047;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sunlight"></div>
+    
+    <div class="environment">
+        <div class="grass"></div>
+    </div>
+
+</body>
+</html>
