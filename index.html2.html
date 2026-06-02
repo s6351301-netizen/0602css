@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>雙軌跡星系複合變形動畫</title>
+    <style>
+        /* 全域初始化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #05070f;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* 1. 星空畫布主空間 */
+        .stage {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(circle at center, #111a36 0%, #05070f 70%);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 第一層：背景正圓形軌跡線 */
+        .track-line-1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 360px;
+            height: 360px;
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        /* -------------------------------------------------------
+           第一層主星（大圓軌跡）：負責原本的五種幾何形狀交替
+           ------------------------------------------------------- */
+        .carrier-level-1 {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* 大正圓路徑（直徑 360px） */
+            offset-path: path('M 400,120 A 180,180 0 1,1 399.9,120 Z'); 
+            animation: orbitMove1 10s infinite linear;
+        }
+
+        /* 第一層主星的變形本體 */
+        .morph-core-1 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            animation: shapeMorph1 10s infinite linear;
+        }
+
+        /* -------------------------------------------------------
+           第二層子星（巢狀下一層）：繞著主星跑「橢圓形軌跡」
+           ------------------------------------------------------- */
+        .carrier-level-2 {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            
+            /* 設定橢圓形路徑（寬度 160px, 高度 90px 的水平橢圓） */
+            offset-path: path('M 50, -30 A 80,45 0 1,1 49.9,-30 Z'); 
+            animation: orbitMove2 4s infinite linear; /* 子星速度稍快，4秒一圈 */
+        }
+
+        /* 第二層子星的變形本體：黃金色方形 $\rightarrow$ 菱形轉換 */
+        .morph-core-2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            color: #000; /* 黑字在黃金背景上更清晰 */
+            animation: shapeMorph2 4s infinite linear;
+        }
+
+        /* 第二層子的子動態橢圓裝飾線（綁在主星上，隨著主星一起走） */
+        .track-line-2 {
+            position: absolute;
+            width: 160px;
+            height: 90px;
+            border: 1px dotted rgba(255, 238, 0, 0.25);
+            border-radius: 50%; /* border-radius 搭配不同寬高即為橢圓 */
+            pointer-events: none;
+            transform: translate(0, 0); /* 錨定在主星中央 */
+        }
+
+        /* -------------------------------------------------------
+           關鍵影格動畫定義 (Keyframes)
+           ------------------------------------------------------- */
+        
+        /* 軌跡位移動畫 */
+        @keyframes orbitMove1 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+        @keyframes orbitMove2 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+
+        /* 第一層主星：五模組形狀動態 (藍方->綠三->紅圓->紫菱->黃八) */
+        @keyframes shapeMorph1 {
+            0%, 100% {
+                background-color: #00d2ff;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 15px #00d2ff);
+            }
+            20% {
+                background-color: #00ff87;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1.1) rotate(120deg) rotateY(180deg);
+                filter: drop-shadow(0 0 25px #00ff87);
+            }
+            40% {
+                background-color: #ff0055;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                border-radius: 50%;
+                transform: scale(0.9) rotateX(180deg);
+                filter: drop-shadow(0 0 20px #ff0055);
+            }
+            60% {
+                background-color: #a020f0;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                transform: scale(1) rotate(240deg);
+                filter: drop-shadow(0 0 25px #a020f0);
+            }
+            80% {
+                background-color: #ffee00;
+                border-radius: 0%;
+                clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+                transform: scale(1.2) rotate(360deg);
+                filter: drop-shadow(0 0 35px #ffee00);
+            }
+        }
+
+        /* 第二層子星：黃金色 2 態動態 (0%方形 $\rightarrow$ 50%菱形 $\rightarrow$ 100%方形) */
+        @keyframes shapeMorph2 {
+            0%, 100% {
+                background-color: #ffd700; /* 經典黃金色 */
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* 正方形 */
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 10px #ffd700);
+            }
+            50% {
+                background-color: #ffaa00; /* 深黃金琥珀色 */
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* 變身菱形 */
+                transform: scale(1.1) rotate(180deg); /* 附帶順滑自轉 */
+                filter: drop-shadow(0 0 20px #ffaa00);
+            }
+        }
+
+        /* 周圍靜態標籤 */
+        .label { position: absolute; font-size: 13px; color: rgba(255,255,255,0.4); pointer-events: none; }
+        .label-title { top: 30px; left: 40px; font-size: 16px; color: #fff; font-weight: bold; }
+        .label-sub { top: 55px; left: 40px; font-size: 12px; color: #ffd700; }
+    </style>
+</head>
+<body>
+
+    <div class="stage">
+        
+        <div class="label label-title">巢狀雙重宇宙軌跡系統</div>
+        <div class="label label-sub">下一層 (Level 2)：黃金色方形 ➔ 菱形 (橢圓軌跡公轉)</div>
+
+        <div class="track-line-1"></div>
+
+        <div class="carrier-level-1">
+            
+            <div class="morph-core-1">
+                Level 1<br>Core
+            </div>
+
+            <div class="track-line-2"></div>
+
+            <div class="carrier-level-2">
+                <div class="morph-core-2">
+                    Gold<br>Sub
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

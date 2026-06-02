@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>流暢大範圍縮放星海動畫</title>
+    <style>
+        /* 全域初始化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* -------------------------------------------------------
+           1. 網頁大背景：星海無限流動特效
+           ------------------------------------------------------- */
+        body {
+            background-color: #03050a;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+                radial-gradient(circle at center, #111a36 0%, #03050a 70%);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 100% 100%;
+            background-attachment: fixed;
+            
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+
+            animation: starStream 60s infinite linear;
+        }
+
+        @keyframes starStream {
+            0% { background-position: 0 0, 0 0, 0 0, center; }
+            100% { background-position: 550px 1100px, -350px 700px, 500px -500px, center; }
+        }
+
+        /* -------------------------------------------------------
+           2. 網頁版面主畫布
+           ------------------------------------------------------- */
+        .stage {
+            position: relative;
+            width: 1024px; /* 稍微放大畫布以容納更大的移動範圍 */
+            height: 768px;
+            background: rgba(10, 15, 30, 0.25); 
+            backdrop-filter: blur(4px); 
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7);
+        }
+
+        /* -------------------------------------------------------
+           3. 核心大群組（圓形+橢圓形）
+           優化：擴大移動範圍，縮放嚴格遵循 100% -> 95% -> 90%
+           ------------------------------------------------------- */
+        .galaxy-group {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            /* 使用 ease-in-out 讓兩端轉折點極度平順 */
+            animation: groupSuperFloat 24s infinite ease-in-out; 
+            transform-origin: center center; /* 確保由中心點進行縮放 */
+        }
+
+        /* 大群組平順移動與縮放的關鍵影格：
+           範圍涵蓋 100% -> 95% -> 90% 的漸進式流暢變化，並加大 XY 軸位移
+        */
+        @keyframes groupSuperFloat {
+            0% {
+                transform: translate(0px, 0px) scale(1); /* 100% 原始大小 */
+            }
+            25% {
+                transform: translate(60px, -40px) scale(0.95); /* 移到右上方並縮小至 95% */
+            }
+            50% {
+                transform: translate(0px, -80px) scale(0.90); /* 移到正上方並縮小至 90% */
+            }
+            75% {
+                transform: translate(-60px, -40px) scale(0.95); /* 移到左上方並回彈至 95% */
+            }
+            100% {
+                transform: translate(0px, 0px) scale(1); /* 平順回到原點與 100% 大小 */
+            }
+        }
+
+        /* -------------------------------------------------------
+           第一組：正圓形軌跡群 (藍/綠/紅/紫)
+           ------------------------------------------------------- */
+        .track-line-1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 360px;
+            height: 360px;
+            border: 2px dashed rgba(0, 210, 255, 0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .carrier-level-1 {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            offset-path: path('M 500,170 A 180,180 0 1,1 499.9,170 Z'); /* 配合新畫布置中 */
+            animation: orbitMove1 12s infinite linear;
+        }
+
+        .morph-core-1 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            animation: shapeMorph1 12s infinite linear;
+        }
+
+        /* -------------------------------------------------------
+           第二組：黃金橢圓形軌跡群 (獨立黃金方塊)
+           ------------------------------------------------------- */
+        .track-line-2 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 580px;
+            height: 260px;
+            border: 2px dotted rgba(255, 215, 0, 0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .carrier-level-2 {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            offset-path: path('M 500,220 A 290,130 0 1,1 499.9,220 Z'); /* 配合新畫布置中 */
+            animation: orbitMove2 8s infinite linear;
+        }
+
+        .morph-core-2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            color: #000;
+            animation: shapeMorph2 8s infinite linear;
+        }
+
+        /* -------------------------------------------------------
+           軌跡與轉場關鍵影格 (Keyframes)
+           ------------------------------------------------------- */
+        @keyframes orbitMove1 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+        @keyframes orbitMove2 { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+
+        /* 第一組轉場 */
+        @keyframes shapeMorph1 {
+            0%, 100% {
+                background-color: #00d2ff;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 15px #00d2ff);
+            }
+            25% {
+                background-color: #00ff87;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1.1) rotate(120deg) rotateY(180deg);
+                filter: drop-shadow(0 0 25px #00ff87);
+            }
+            50% {
+                background-color: #ff0055;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                border-radius: 50%;
+                transform: scale(0.9) rotateX(180deg);
+                filter: drop-shadow(0 0 20px #ff0055);
+            }
+            75% {
+                background-color: #a020f0;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                transform: scale(1) rotate(240deg);
+                filter: drop-shadow(0 0 25px #a020f0);
+            }
+        }
+
+        /* 第二組黃金轉場 */
+        @keyframes shapeMorph2 {
+            0%, 100% {
+                background-color: #ffd700;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 12px #ffd700);
+            }
+            50% {
+                background-color: #ffaa00;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                transform: scale(1.1) rotate(180deg);
+                filter: drop-shadow(0 0 22px #ffaa00);
+            }
+        }
+
+        /* UI 標籤說明 */
+        .interface-label {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .interface-label h1 { font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .interface-label p { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="stage">
+        
+        <div class="interface-label">
+            <h1>大範圍流暢縮放群組系統</h1>
+            <p>
+                群組動態範圍：大範圍位移漂移<br>
+                群組縮放階段：100% ➔ 95% ➔ 90% 平順過渡
+            </p>
+        </div>
+
+        <div class="galaxy-group">
+            
+            <div class="track-line-1"></div>
+            <div class="carrier-level-1">
+                <div class="morph-core-1">Orbit 1</div>
+            </div>
+
+            <div class="track-line-2"></div>
+            <div class="carrier-level-2">
+                <div class="morph-core-2">Gold 2</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
