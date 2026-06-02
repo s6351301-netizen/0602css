@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS 邊移動邊變形動畫</title>
+    <style>
+        /* 1. 設定畫布空間 */
+        .stage {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border: 2px dashed #ccc;
+            margin: 50px auto;
+            background-color: #f9f9f9;
+        }
+
+        /* 2. 定義元件與動畫屬性 */
+        .box {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            
+            /* 綁定動畫：名稱形狀移動、總歷時 10 秒、無限循環、均速 */
+            animation: moveAndMorph 10s infinite linear; 
+        }
+
+        /* 3. 純 CSS 移動 + 變型 + 變色動畫 */
+        @keyframes moveAndMorph {
+            /* -----------------------------------------------
+               起點：左上 (藍色 方形)
+               ----------------------------------------------- */
+            0% {
+                top: 0;
+                left: 0;
+                background-color: blue;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* 正方形四角 */
+            }
+
+            /* -----------------------------------------------
+               1. 向右移：到達右上 (綠色 三角形)
+               ----------------------------------------------- */
+            25% {
+                top: 0;
+                left: 400px; /* 畫布 500 - 方框 100 */
+                background-color: green;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%); /* 三個頂點的三角形 */
+            }
+
+            /* -----------------------------------------------
+               2. 向下移：到達右下 (紅色 圓形)
+               ----------------------------------------------- */
+            50% {
+                top: 400px;
+                left: 400px;
+                background-color: red;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* 先還原 polygon 基礎，靠下一步驟圓形過渡 */
+                border-radius: 50%; /* 變圓形 */
+            }
+
+            /* -----------------------------------------------
+               3. 往左移：到達左下 (綠色 菱形)
+               ----------------------------------------------- */
+            75% {
+                top: 400px;
+                left: 0;
+                background-color: green;
+                border-radius: 0%; /* 取消圓角 */
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* 上右下左四點連成菱形 */
+            }
+
+            /* -----------------------------------------------
+               4. 往上移：回到原點 (黃色 方形)
+               ----------------------------------------------- */
+            95% {
+                top: 0;
+                left: 0;
+                background-color: yellow;
+                border-radius: 0%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* 變回方形 */
+            }
+
+            /* 5. 結束：平滑變回最開始的藍色方形 */
+            100% {
+                top: 0;
+                left: 0;
+                background-color: blue;
+                border-radius: 0%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stage">
+        <div class="box"></div>
+    </div>
+
+</body>
+</html>

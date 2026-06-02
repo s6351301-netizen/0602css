@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS 進階複合變形動畫</title>
+    <style>
+        /* 1. 設定畫布空間 */
+        .stage {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border: 2px dashed #bbb;
+            margin: 50px auto;
+            background-color: #111424; /* 改為深色背景，讓發光與色彩變化更明顯 */
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+
+        /* 2. 定義元件與動畫屬性 */
+        .box {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            
+            /* 綁定複合動畫：名稱、總歷時 12 秒、無限循環、均速 */
+            animation: superMorph 12s infinite linear; 
+        }
+
+        /* 3. 純 CSS 複合動畫：位移 + 變形 + 變色 + 3D旋轉 + 縮放 + 發光 */
+        @keyframes superMorph {
+            /* -------------------------------------------------------
+               【起點】左上角：藍色 正方形
+               變化：標準尺寸、無旋轉、藍色發光
+               ------------------------------------------------------- */
+            0% {
+                top: 0;
+                left: 0;
+                background-color: #00d2ff;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 15px #00d2ff);
+            }
+
+            /* -------------------------------------------------------
+               【1. 向右移】抵達右上角：綠色 三角形
+               額外變化：放大 1.2 倍、順時針旋轉 180 度、綠色發光
+               ------------------------------------------------------- */
+            25% {
+                top: 0;
+                left: 400px;
+                background-color: #00ff87;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1.2) rotate(180deg);
+                filter: drop-shadow(0 0 25px #00ff87);
+            }
+
+            /* -------------------------------------------------------
+               【2. 向下移】抵達右下角：紅色 圓形
+               額外變化：縮小至 0.8 倍、3D 水平翻轉 360 度、紅色發光
+               ------------------------------------------------------- */
+            50% {
+                top: 400px;
+                left: 400px;
+                background-color: #ff0055;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* 清除 polygon 影響 */
+                border-radius: 50%; /* 變圓形 */
+                transform: scale(0.8) rotateY(360deg);
+                filter: drop-shadow(0 0 20px #ff0055);
+            }
+
+            /* -------------------------------------------------------
+               【3. 往左移】抵達左下角：紫色 菱形 (原設定綠色，此處改紫色讓色彩更豐富)
+               額外變化：體積拉伸、逆時針翻轉、紫色發光
+               ------------------------------------------------------- */
+            75% {
+                top: 400px;
+                left: 0;
+                background-color: #a020f0;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* 變菱形 */
+                transform: scale(1.1) rotate(540deg);
+                filter: drop-shadow(0 0 30px #a020f0);
+            }
+
+            /* -------------------------------------------------------
+               【4. 往上移】回到左上原點：黃色 正方形
+               額外變化：準備回歸初始狀態，旋轉校正，黃色發光
+               ------------------------------------------------------- */
+            95% {
+                top: 0;
+                left: 0;
+                background-color: #ffee00;
+                border-radius: 0%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                transform: scale(1) rotate(720deg);
+                filter: drop-shadow(0 0 15px #ffee00);
+            }
+
+            /* -------------------------------------------------------
+               【結束與循環】平滑回到 0% 的藍色正方形狀態
+               ------------------------------------------------------- */
+            100% {
+                top: 0;
+                left: 0;
+                background-color: #00d2ff;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                border-radius: 0%;
+                transform: scale(1) rotate(720deg);
+                filter: drop-shadow(0 0 15px #00d2ff);
+            }
+        }
+    </style>
+</head>
+<body>
+<p>🎬 完整 HTML 程式碼（融合 3D 旋轉、縮放與發光特效）<br>
+這份程式碼完全只使用 純 CSS。我保留了您原本的「四角軌跡」與「四種形狀切換」，並額外加上了自轉、3D 翻轉、縮放與霓虹發光的複合變化：
+</p>
+    <div class="stage">
+        <div class="box"></div>
+    </div>
+    <p>
+除了位置、顏色、以及基礎幾何形狀（方形、三角形、圓形、菱形）的轉換外，
+在純 CSS 語法中，我們還可以透過各種屬性玩出更多令人驚豔的動態特效。<br>
+
+以下為您列出幾種非常經典且強大的 CSS 變形與視覺特效，並將它們直接融合進全新的 HTML 動畫檔案中：<br>
+
+💡 除了基礎形狀，還能加上哪些 CSS 變化？<br>
+3D 翻轉與旋轉 (transform: rotate / rotateY)<br>
+
+讓方框在移動時，不只是平移，還能像方塊一樣自轉，甚至在轉換方向時做出翻轉的立體視覺感。<br>
+
+尺寸縮放與呼吸律動 (transform: scale)<br>
+
+讓圖形在特定轉角處放大（產生衝擊感）或縮小，甚至在移動過程中產生如同呼吸一般的忽大忽小律動。<br>
+
+動態陰影與立體感 (box-shadow)<br>
+
+隨著形狀改變，陰影的模糊度（Blur）與顏色也可以跟著變。例如：變成圓形時陰影變大（像浮起來），變成菱形時陰影收緊。<br>
+
+不透明度與發光過渡 (opacity / filter: drop-shadow)<br>
+
+讓網頁元件在移動時產生忽隱忽現的動態（幽靈效果），或者在特定節點產生霓虹燈般的發光（Glow）特效。<br>
+ </p>    
+
+</body>
+</html>

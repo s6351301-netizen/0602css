@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS 方框移動動畫</title>
+    <style>
+        /* 1. 設定畫布/圖面空間 */
+        .stage {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border: 2px dashed #ccc;
+            margin: 50px auto;
+            background-color: #f9f9f9;
+        }
+
+        /* 2. 定義方框與動畫屬性 */
+        .box {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            
+            /* 綁定下方定義的動畫：名稱、總歷時 8 秒、無限循環、均速移動 */
+            animation: boxMove 8s infinite linear; 
+        }
+
+        /* 3. 純 CSS 動畫軌跡與顏色變換 */
+        @keyframes boxMove {
+            /* 起點：左上 (藍色) */
+            0% {
+                top: 0;
+                left: 0;
+                background-color: blue;
+            }
+            
+            /* 1. 移到 右上 (變成綠色) */
+            20% {
+                top: 0;
+                left: 420px; /* 畫布 500 扣掉方框寬度 80 */
+                background-color: green;
+            }
+            
+            /* 2. 移到 右下 (變成紅色) */
+            40% {
+                top: 420px; /* 畫布 500 扣掉方框高度 80 */
+                left: 420px;
+                background-color: red;
+            }
+            
+            /* 3. 移到 左下 (變成綠色) */
+            60% {
+                top: 420px;
+                left: 0;
+                background-color: green;
+            }
+            
+            /* 4. 往原點移動中/到達 (變成黃色) */
+            80% {
+                top: 0;
+                left: 0;
+                background-color: yellow;
+            }
+
+            /* 5. 結束並準備重頭開始 (平滑回歸原本的藍色) */
+            100% {
+                top: 0;
+                left: 0;
+                background-color: blue;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stage">
+        <div class="box"></div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS 高級複合變形與星空動態特效</title>
+    <style>
+        /* 全域初始化，移除瀏覽器預設邊距 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #05070f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* 1. 星空畫布空間：模擬深邃宇宙背景 */
+        .stage {
+            position: relative;
+            width: 700px;
+            height: 700px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: radial-gradient(circle at center, #111a36 0%, #05070f 70%);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* 背景軌跡線裝飾 (純 CSS 繪製圓形軌跡) */
+        .track-line {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 500px;
+            height: 500px;
+            border: 2px dashed rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* 2. 動態核心元件：包覆文字與幾何形狀 */
+        .animation-container {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            /* 綁定複合動畫：時間 12 秒、無限循環、線性均速 */
+            animation: cosmicJourney 12s infinite linear;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 實際變形與發光的本體 */
+        .morph-box {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        /* 元件內部的動態說明文字 */
+        .box-text {
+            position: relative;
+            z-index: 10;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        /* 3. 各個座標點的固定文字標籤說明 */
+        .label {
+            position: absolute;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+            pointer-events: none;
+        }
+        .label b { color: #fff; }
+        
+        .label-top-left     { top: 40px;  left: 40px; }
+        .label-top-right    { top: 40px;  right: 40px; text-align: right; }
+        .label-bottom-right { bottom: 40px; right: 40px; text-align: right; }
+        .label-bottom-left  { bottom: 40px; left: 40px; }
+
+        /* 4. 純 CSS 複合動畫：位移 + 變形 + 3D翻轉 + 縮放 + 濾鏡發光 + 色相旋轉 */
+        @keyframes cosmicJourney {
+            /* -------------------------------------------------------
+               【0% 起點】左上角 (100px, 100px)
+               形狀：藍色正方形 / 尺寸：1.0 / 旋轉：0度 / 藍色霓虹光
+               ------------------------------------------------------- */
+            0% {
+                top: 100px;
+                left: 100px;
+                transform: scale(1) rotate(0deg);
+            }
+            0.1% {
+                /* 運用 child 屬性進行內部分離控制，確保 clip-path 順利轉場 */
+                background-color: #00d2ff;
+                border-radius: 0%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                filter: drop-shadow(0 0 20px #00d2ff) hue-rotate(0deg);
+            }
+
+            /* -------------------------------------------------------
+               【25% 頂點一】向右移至 右上角 (480px, 100px)
+               形狀：綠色三角形 / 尺寸：1.3 (放大) / 旋轉：3D Y軸翻轉 180度 / 綠色霓虹光
+               ------------------------------------------------------- */
+            25% {
+                top: 100px;
+                left: 480px;
+                transform: scale(1.3) rotateY(180deg) rotate(0deg);
+            }
+            25.1% {
+                background-color: #00ff87;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%);
+                filter: drop-shadow(0 0 30px #00ff87) hue-rotate(0deg);
+            }
+
+            /* -------------------------------------------------------
+               【50% 頂點二】向下移至 右下角 (480px, 480px)
+               形狀：紅色完美圓形 / 尺寸：0.8 (縮小) / 旋轉：3D X軸翻轉 360度 / 紅色烈焰光
+               ------------------------------------------------------- */
+            50% {
+                top: 480px;
+                left: 480px;
+                transform: scale(0.8) rotateX(360deg) rotate(0deg);
+            }
+            50.1% {
+                background-color: #ff0055;
+                border-radius: 50%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); /* 清除 polygon 限制 */
+                filter: drop-shadow(0 0 25px #ff0055) hue-rotate(0deg);
+            }
+
+            /* -------------------------------------------------------
+               【75% 頂點三】向左移至 左下角 (100px, 480px)
+               形狀：紫色四面菱形 / 尺寸：1.1 (輕微放大) / 旋轉：平面自轉 180度 / 紫色魔幻光
+               ------------------------------------------------------- */
+            75% {
+                top: 480px;
+                left: 100px;
+                transform: scale(1.1) rotate(180deg);
+            }
+            75.1% {
+                background-color: #a020f0;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                filter: drop-shadow(0 0 35px #a020f0) hue-rotate(0deg);
+            }
+
+            /* -------------------------------------------------------
+               【92% 頂點四】向上移 接近原點 (100px, 100px)
+               形狀：金黃色八邊形 / 尺寸：1.4 (最大化) / 特效：啟動 hue-rotate 光譜極光旋轉
+               ------------------------------------------------------- */
+            92% {
+                top: 100px;
+                left: 100px;
+                transform: scale(1.4) rotate(360deg);
+            }
+            92.1% {
+                background-color: #ffee00;
+                border-radius: 0%;
+                /* 八邊形裁切路徑 */
+                clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+                filter: drop-shadow(0 0 40px #ffee00) hue-rotate(360deg); /* 產生光譜漸變 */
+            }
+
+            /* -------------------------------------------------------
+               【100% 終點】回到最初起點，平滑過渡銜接
+               ------------------------------------------------------- */
+            100% {
+                top: 100px;
+                left: 100px;
+                transform: scale(1) rotate(360deg);
+            }
+        }
+
+        /* 讓內部本體同步繼承 keyframes 的背景與形狀變化，達到完美融合 */
+        .animation-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            clip-path: inherit;
+            border-radius: inherit;
+            filter: inherit;
+            animation: cosmicJourneyData 12s infinite linear;
+        }
+
+        /* 同步變色與變形數據的獨立影格 */
+        @keyframes cosmicJourneyData {
+            0%, 100% {
+                background-color: #00d2ff;
+                border-radius: 0%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                filter: drop-shadow(0 0 20px #00d2ff);
+            }
+            25% {
+                background-color: #00ff87;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%);
+                filter: drop-shadow(0 0 30px #00ff87);
+            }
+            50% {
+                background-color: #ff0055;
+                border-radius: 50%;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                filter: drop-shadow(0 0 25px #ff0055);
+            }
+            75% {
+                background-color: #a020f0;
+                border-radius: 0%;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                filter: drop-shadow(0 0 35px #a020f0);
+            }
+            92% {
+                background-color: #ffee00;
+                border-radius: 0%;
+                clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+                filter: drop-shadow(0 0 40px #ffee00);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stage">
+        
+        <div class="track-line"></div>
+
+        <div class="label label-top-left">
+            <b>0% Start (0s)</b><br>
+            → 藍色正方形 (Blue Square)
+        </div>
+
+        <div class="label label-top-right">
+            <b>25% Morph (3s)</b><br>
+            → 綠色三角形 (Green Triangle)<br>
+            * 3D Y-Axis Spinning
+        </div>
+
+        <div class="label label-bottom-right">
+            <b>50% Morph (6s)</b><br>
+            → 紅色圓球體 (Red Sphere)<br>
+            * 3D X-Axis Flip
+        </div>
+
+        <div class="label label-bottom-left">
+            <b>75% Morph (9s)</b><br>
+            → 紫色菱形 (Purple Rhombus)<br>
+            <b>92% Max Scale (11s)</b><br>
+            → 黃色八邊形 (Yellow Octagon)
+        </div>
+
+        <div class="animation-container">
+            <div class="box-text">CSS<br>Morphing</div>
+        </div>
+
+    </div>
+
+</body>
+</html>

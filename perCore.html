@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<div style="white-space: pre-wrap; font-family: sans-serif;">
+在CSS語法理面,還有哪些是屬具有動態效果?
+在 CSS 的世界裡，除了前面我們用到的位置（top/left）、顏色（background-color）、變形（transform）、裁切（clip-path）和陰影（filter: drop-shadow）之外，還有非常多屬性在結合動畫（animation）或過渡（transition）時，能產生強大的動態視覺效果。
+
+我們可以將這些具備動態潛力的 CSS 屬性分為以下幾大類：
+
+一、 視覺與濾鏡類（Visual & Filters）
+這類屬性最適合用來營造網頁的氣氛、科技感、或是元件的登場特效。
+
+opacity（不透明度）：
+
+動態效果： 讓元件產生「淡入（Fade In）」或「淡出（Fade Out）」的效果，或是像霓虹燈一樣閃爍。
+
+filter（濾鏡）： 這是 CSS 非常強大的視覺武器，常見的動態變化有：
+
+blur(px)：從模糊變清晰（常用於圖片載入或開場特效）。
+
+brightness(%)：控制明亮度，做出閃光、充電、或發光脈衝效果。
+
+hue-rotate(deg)：色相旋轉。可以讓一個元件在不需要更換背景色的情況下，自動「輪播」彩虹般的全光譜顏色。
+
+contrast(%) / grayscale(%)：對比度變化或黑白變彩色。
+
+mix-blend-mode（混合模式）：
+
+動態效果： 類似 Photoshop 的圖層混合（如正片疊底、濾色）。當元件移動到不同顏色的背景上時，文字或圖案會動態改變與背景疊加的顏色，非常具有現代網頁設計感。
+
+二、 邊框與背景類（Borders & Backgrounds）
+讓元件的邊緣和表面不再死板，適合用來做按鈕（Button）或卡片的互動特效。
+
+border-radius（圓角）：
+
+動態效果： 除了變圓形，你可以分別控制四個角的百分比（例如：border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;），讓形狀像有機液體一樣扭曲、流動。
+
+background-position（背景圖片位置）：
+
+動態效果： 如果背景是一張長圖或漸層圖，改變它的 position 可以做出「背景在容器後方不斷滾動」的視覺特效（例如經典的遊戲橫捲軸背景）。
+
+background-size（背景尺寸）：
+
+動態效果： 做出滑鼠游標移上去（Hover）時，背景圖片緩慢放大（Zoom-in）的輕奢感。
+
+box-shadow（盒子陰影）：
+
+動態效果： 改變陰影的擴散距離與模糊度，可以做出元件「飄浮起來」或「被按下去」的物理重力感。
+
+三、 文字與排版類（Typography & Layout）
+文字也能透過動畫變得非常有生命力。
+
+letter-spacing（字距）：
+
+動態效果： 讓標題文字在登場時，字與字之間緩慢地「張開」或「緊縮」，營造電影預告片般的張力。
+
+text-shadow（文字陰影）：
+
+動態效果： 透過多層發光陰影的切換，做出動態的「霓虹燈招牌閃爍」或文字被雷射掃描的效果。
+
+color（文字顏色）：
+
+動態效果： 文字顏色的平滑漸變。
+
+clip-path 的高級應用：
+
+動態效果： 除了變圖形，還可以用來做「聚光燈效果」或「文字拉鏈式解鎖登場」。
+
+四、 3D 與空間形變類（3D Transforms）
+讓 2D 的網頁產生立體空間感。
+
+perspective（透視度）與 transform-style: preserve-3d：
+
+動態效果： 設定網頁的「雙眼視角距離」。搭配 rotateX 或 rotateY，可以做出像翻牌、立體翻書、3D 旋轉方塊、或是像星際大戰片頭文字往遠方退去的立體效果。
+
+💡 總結：如何讓它們動起來？
+所有上述屬性，只要放進以下兩種 CSS 機制中，就會產生動畫：
+
+transition（過渡）： 當滑鼠點擊（:active）或移過去（:hover）時，觸發 A 狀態到 B 狀態的平滑改變。
+
+animation + @keyframes（關鍵影格動畫）： 不需要使用者操作，網頁打開就會依據時間軸自主、無限循環地產生複雜變化（就像我們前面寫的方框動畫）。
+</div>
+
+
+<pre><code>
+function sayHello() {
+    // 這裡的縮排跟換行都會完美保留
+    console.log("Hello World!");
+}
+&lt;div class="box"&gt;這是網頁標籤範例&lt;/div&gt;
+</code></pre>
+
+    <hr>
+    <pre><code>
+function sayHello() {
+    // 這裡的縮排跟換行都會完美保留
+    console.log("Hello World!");
+}
+&lt;div class="box"&gt;這是網頁標籤範例&lt;/div&gt;
+</code></pre>
+</body>
+</html>
