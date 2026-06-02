@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>五星並存：獨立軌跡與多態複合變形動畫</title>
+    <style>
+        /* 全域初始化 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* -------------------------------------------------------
+           1. 全網頁大背景：星海無限流動特效
+           ------------------------------------------------------- */
+        body {
+            background-color: #03050a;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+                radial-gradient(circle at center, #111a36 0%, #03050a 70%);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 100% 100%;
+            background-attachment: fixed;
+            
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+
+            animation: starStream 60s infinite linear;
+        }
+
+        @keyframes starStream {
+            0% { background-position: 0 0, 0 0, 0 0, center; }
+            100% { background-position: 550px 1100px, -350px 700px, 500px -500px, center; }
+        }
+
+        /* -------------------------------------------------------
+           2. 網頁版面主畫布（毛玻璃透視外框）
+           ------------------------------------------------------- */
+        .stage {
+            position: relative;
+            width: 1000px;
+            height: 750px;
+            background: rgba(10, 15, 30, 0.2); 
+            backdrop-filter: blur(5px); 
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+        }
+
+        /* 核心大群組：讓這 5 個軌跡整體也帶有平順的微幅慢速漂移（100% -> 95% -> 90% 縮放） */
+        .galaxy-group {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            animation: groupSuperFloat 25s infinite ease-in-out;
+            transform-origin: center center;
+        }
+
+        @keyframes groupSuperFloat {
+            0% { transform: translate(0px, 0px) scale(1); }
+            25% { transform: translate(40px, -30px) scale(0.95); }
+            50% { transform: translate(0px, -60px) scale(0.90); }
+            75% { transform: translate(-40px, -30px) scale(0.95); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+
+        /* -------------------------------------------------------
+           3. 背景軌跡裝飾線（純 CSS 繪製對應的幾何路徑線條）
+           ------------------------------------------------------- */
+        .track-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        /* 1、2、3號走的中央正圓軌跡線 */
+        .track-circle {
+            width: 440px;
+            height: 440px;
+            border: 2px dashed rgba(255, 255, 255, 0.06);
+        }
+        /* 4號走的橫向大橢圓軌跡線 */
+        .track-ellipse-horizontal {
+            width: 680px;
+            height: 280px;
+            border: 2px dotted rgba(255, 215, 0, 0.1);
+        }
+        /* 5號走的縱向大橢圓軌跡線 */
+        .track-ellipse-vertical {
+            width: 300px;
+            height: 600px;
+            border: 2px dashed rgba(255, 0, 85, 0.08);
+        }
+
+        /* -------------------------------------------------------
+           4. 基礎元件通用設定（5 個載體平級並列）
+           ------------------------------------------------------- */
+        .cosmic-carrier {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .morph-core {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            color: #ffffff;
+        }
+
+        /* -------------------------------------------------------
+           5. 針對 5 個圖形單獨編寫：軌跡路徑、速度、換色與形狀動畫
+           ------------------------------------------------------- */
+
+        /* 🟦 【第一組：藍色正方形】
+           特性：繞中央正圓前進、12秒一圈、呼吸縮放、純藍霓虹光 */
+        .obj-square {
+            offset-path: path('M 500,155 A 220,220 0 1,1 499.9,155 Z');
+            animation: moveOrbit 12s infinite linear;
+        }
+        .obj-square .morph-core {
+            animation: animSquare 6s infinite ease-in-out;
+        }
+        @keyframes animSquare {
+            0%, 100% {
+                background-color: #00d2ff;
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                transform: scale(1);
+                filter: drop-shadow(0 0 15px #00d2ff);
+            }
+            50% {
+                background-color: #0088ff;
+                transform: scale(0.85);
+                filter: drop-shadow(0 0 25px #0088ff);
+            }
+        }
+
+        /* 🟩 【第二組：綠色三角形】
+           特性：同繞中央正圓（速度稍快 9秒一圈）、3D自轉、翠綠光芒 */
+        .obj-triangle {
+            offset-path: path('M 500,155 A 220,220 0 1,1 499.9,155 Z');
+            animation: moveOrbit 9s infinite linear;
+        }
+        .obj-triangle .morph-core {
+            animation: animTriangle 4.5s infinite linear;
+        }
+        @keyframes animTriangle {
+            0%, 100% {
+                background-color: #00ff87;
+                clip-path: polygon(50% 0%, 100% 100%, 100% 100%, 0% 100%);
+                transform: rotate(0deg) rotateY(0deg);
+                filter: drop-shadow(0 0 15px #00ff87);
+            }
+            50% {
+                background-color: #00aa50;
+                transform: rotate(180deg) rotateY(180deg);
+                filter: drop-shadow(0 0 30px #00ff87);
+            }
+        }
+
+        /* 🟥 【第三組：紅色圓形】
+           特性：同繞中央正圓（超快 6秒一圈）、3D翻滾、烈焰紅光 */
+        .obj-sphere {
+            offset-path: path('M 500,155 A 220,220 0 1,1 499.9,155 Z');
+            animation: moveOrbit 6s infinite linear;
+        }
+        .obj-sphere .morph-core {
+            animation: animSphere 3s infinite ease-in-out;
+        }
+        @keyframes animSphere {
+            0%, 100% {
+                background-color: #ff0055;
+                border-radius: 50%;
+                transform: scale(0.9) rotateX(0deg);
+                filter: drop-shadow(0 0 15px #ff0055);
+            }
+            50% {
+                background-color: #b3003b;
+                transform: scale(1.1) rotateX(180deg);
+                filter: drop-shadow(0 0 30px #ff0055);
+            }
+        }
+
+        /* 🟪 【第四組：紫色菱形】
+           特性：走「獨立橫向大橢圓軌跡」、14秒一圈、魅惑紫光 */
+        .obj-rhombus {
+            offset-path: path('M 500,235 A 340,140 0 1,1 499.9,235 Z');
+            animation: moveOrbit 14s infinite linear;
+        }
+        .obj-rhombus .morph-core {
+            animation: animRhombus 7s infinite ease-in-out;
+        }
+        @keyframes animRhombus {
+            0%, 100% {
+                background-color: #a020f0;
+                clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 15px #a020f0);
+            }
+            50% {
+                background-color: #6a0dad;
+                transform: scale(1.15) rotate(180deg);
+                filter: drop-shadow(0 0 30px #a020f0);
+            }
+        }
+
+        /* 🟨 【第五組：黃金八邊形】
+           特性：走「獨立縱向大橢圓軌跡」、10秒一圈、自轉與光譜色相變色（極光特效） */
+        .obj-octagon {
+            offset-path: path('M 500,75 A 150,300 0 1,1 499.9,75 Z');
+            animation: moveOrbit 10s infinite linear;
+        }
+        .obj-octagon .morph-core {
+            color: #000; /* 黑字在黃金背景上更清晰 */
+            animation: animOctagon 5s infinite linear;
+        }
+        @keyframes animOctagon {
+            0%, 100% {
+                background-color: #ffd700;
+                clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 15px #ffd700) hue-rotate(0deg);
+            }
+            50% {
+                background-color: #ffaa00;
+                transform: scale(1.2) rotate(360deg);
+                /* 產生流暢的色彩光譜極光漸變 */
+                filter: drop-shadow(0 0 35px #ffaa00) hue-rotate(180deg); 
+            }
+        }
+
+        /* 軌跡公轉基本動畫控制 */
+        @keyframes moveOrbit {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
+        }
+
+        /* 頂部介面 UI 文字標籤 */
+        .interface-label {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .interface-label h1 { font-size: 18px; font-weight: bold; margin-bottom: 5px; color: #fff; }
+        .interface-label p { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="stage">
+        
+        <div class="interface-label">
+            <h1>獨立五星多軌跡複合星系系統</h1>
+            <p>
+                • 5 個幾何圖形同時並存，擁有完全獨立的運動速度與變形特效<br>
+                • 軌跡：正圓軌跡（藍/綠/紅） ｜ 橫向橢圓（紫） ｜ 縱向橢圓（黃金）<br>
+                • 大群組範圍：全版面流暢漂移與 100% ➔ 95% ➔ 90% 深度縮放
+            </p>
+        </div>
+
+        <div class="track-bg track-circle"></div>
+        <div class="track-bg track-ellipse-horizontal"></div>
+        <div class="track-bg track-ellipse-vertical"></div>
+
+        <div class="galaxy-group">
+            
+            <div class="cosmic-carrier obj-square">
+                <div class="morph-core">Square</div>
+            </div>
+
+            <div class="cosmic-carrier obj-triangle">
+                <div class="morph-core">Triangle</div>
+            </div>
+
+            <div class="cosmic-carrier obj-sphere">
+                <div class="morph-core">Sphere</div>
+            </div>
+
+            <div class="cosmic-carrier obj-rhombus">
+                <div class="morph-core">Rhombus</div>
+            </div>
+
+            <div class="cosmic-carrier obj-octagon">
+                <div class="morph-core">Octagon</div>
+            </div>
+
+        </div> </div>
+
+</body>
+</html>
